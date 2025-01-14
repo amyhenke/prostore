@@ -30,3 +30,67 @@ model Product {
     banner      String?
     createdAt   DateTime @default(now()) @db.Timestamp(6)
 }
+
+model User {
+    id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    name          String?   @default("NO_NAME")
+    email         String    @unique(map: "user_email_idx")
+    emailVerified DateTime? @db.Timestamp(6)
+    image         String?
+    password      String?
+    role          String    @default("user")
+    address       Json?     @db.Json
+    paymentMethod String?
+    createdAt     DateTime  @default(now()) @db.Timestamp(6)
+    updatedAt     DateTime  @updatedAt
+    // create a link to account table
+    account       Account[]
+    session       Session[]
+}
+
+// password is optional as when using the user model in our app, sometimes we don't need to use the password
+// might implement magiclink (passwordless login)
+
+model Account {
+    userId            String  @db.Uuid
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String?
+    access_token      String?
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String?
+    session_state     String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // set relationship with User table - userId in this table refers to id in user table (userId is foreign key)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // composite field (combines those 2 fields) and the combination is a primary key
+    @@id([provider, providerAccountId])
+}
+
+model Session {
+    // add @id to make PK and unique
+    sessionToken String   @id
+    userId       String   @db.Uuid
+    expires      DateTime @db.Timestamp(6)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now()) @db.Timestamp(6)
+    updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+    identifier String
+    token      String
+    expires    DateTime
+
+    //  composite id
+    @@id([identifier, token])
+}
