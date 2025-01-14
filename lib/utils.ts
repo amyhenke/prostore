@@ -20,3 +20,24 @@ export function formatNumberWithDecimal(num: number): string {
     // padEnd means if its 49.9 it will add another 0 onto it
     return decimal ? `${int}.${decimal.padEnd(2, '0')}` : `${int}.00`
 }
+
+// Format sign up errors
+// eslint-disabled-next-line @typescript-eslink/no-explicit-any
+export async function formatError(error: any) {
+    if (error.name === 'ZodError') {
+        // handle zod error
+        const fieldErrors = Object.keys(error.errors).map((field) => error.errors[field].message)
+
+        return fieldErrors.join('. ')
+    } else if (error.name === 'PrismaClientKnownRequestError' && error.code === "P2002") {
+        // handle prisma error
+        const field = error.meta?.target ? error.meta.target[0] : 'Field'
+
+        // capitalise first letter, add rest of word (name of field)
+        return `${field.charAt(0).toUpperCase() + field.slice(1)} already exists`
+    } else {
+        // handle other errors
+        // if error is a string, display it. if not, turn into a string and display
+        return typeof error.message === 'string' ? error.message : JSON.stringify(error.message)
+    }
+} 
