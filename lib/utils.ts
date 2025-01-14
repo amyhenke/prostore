@@ -22,7 +22,7 @@ export function formatNumberWithDecimal(num: number): string {
 }
 
 // Format sign up errors
-// eslint-disabled-next-line @typescript-eslink/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function formatError(error: any) {
     if (error.name === 'ZodError') {
         // handle zod error
