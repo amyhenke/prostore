@@ -6,7 +6,7 @@ import { isRedirectError } from "next/dist/client/components/redirect-error"
 
 // Sign in user with credentials
 // when we create the form we're gunna use a new react hook called UseActionState() - when submit an action with that hook need prevState as first argument
-export async function signInWithCredentials(prevState: unknown, formData: formData) {
+export async function signInWithCredentials(prevState: unknown, formData: FormData) {
     try {
         // use the validator schema (zod) by calling its name and parse(). keeps the code here clean as validation not needed
         const user = signInFormSchema.parse({
