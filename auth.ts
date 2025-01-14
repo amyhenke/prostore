@@ -53,6 +53,22 @@ export const config = {
             // set the user ID from the token (JWT has a subject (sub property) on it that has the user ID)
             session.user.id = token.sub
 
+            // have to explicitly forward this to the token or can't access it
+            session.user.role = token.role
+            session.user.name = token.name
+
+            // console.log(token)
+            // {
+            //     name: 'Jane',
+            //     email: 'admin@example.com',
+            //     sub: '78ed0ca8-02c5-4da4-b15f-62a25ee3b23b',
+            //     role: 'admin',
+            //     iat: 1736893377,
+            //     exp: 1739485377,
+            //     jti: '1456bb9d-5878-4e48-bdd6-b0c945d52047'
+            // }
+            // ROLE now added
+
             // if there is an update, set the user name
             if (trigger === 'update') {
                 // need to make sure that when they update their name in the DB, it also changes in the session
@@ -60,7 +76,26 @@ export const config = {
             }
             
             return session
+        },
+        async jwt({ token, user, trigger, session }: any) {
+            // assign user fields to token
+            if (user) {
+                token.role = user.role
+
+                // if user has no name, use first part of email
+                if(user.name === "NO_NAME") {
+                    token.name = user.email!.split('@')[0]
+                }
+
+                // update the DB to reflect token name
+                await prisma.user.update({
+                    where: {id: user.id},
+                    data: {name: token.name}
+                })
+            }
+            return token
         }
+
     },
     // test: 1
 } satisfies NextAuthConfig
