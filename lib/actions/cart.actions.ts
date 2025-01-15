@@ -19,7 +19,7 @@ export async function addItemToCart(data: CartItem) {
         const userId = session?.user?.id ? (session.user.id as string) : undefined
 
         // get cart
-        const cart = await getMyCart()
+        // const cart = await getMyCart()
 
         // parse and validate item
         const item = cartItemSchema.parse(data)
@@ -45,9 +45,9 @@ export async function addItemToCart(data: CartItem) {
         }
     } catch (error) {
         return {
-        success: false,
-        message: formatError(error)
-    }
+            success: false,
+            message: formatError(error)
+        }
     }
 }
 
