@@ -47,3 +47,23 @@ export const signUpFormSchema = z.object({
 })
 // show the passwords must match message on the confirmPassword input
 
+// Cart schemas
+export const cartItemSchema = z.object({
+    productId: z.string().min(1, 'Product is required'),
+    name: z.string().min(1, 'Name is required'),
+    slug: z.string().min(1, 'Slug is required'),
+    qty: z.number().int().nonnegative('Quantity must be a positive number'),
+    image: z.string().min(1, 'Image is required'),
+    price: currency
+})
+
+export const insertCartSchema = z.object({
+    items: z.array(cartItemSchema),
+    itemsPrice: currency,
+    totalPrice: currency,
+    shippingPrice: currency,
+    taxPrice: currency,
+    sessionCartId: z.string().min(1, "Session Cart ID is required"),
+    // userId is optional as we will allow users to add products to the cart even if not logged in - to checkout they will have to login. CallbackUrl will take them back to their cart after logging in
+    userId: z.string().optional().nullable()
+})

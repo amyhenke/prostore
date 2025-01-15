@@ -49,6 +49,8 @@ export const config = {
     })],
     callbacks: {
         // whenever a session is accessed, this runs
+        // REMOVE THIS ONE
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         async session({ session, user, trigger, token }: any) {
             // set the user ID from the token (JWT has a subject (sub property) on it that has the user ID)
             session.user.id = token.sub
