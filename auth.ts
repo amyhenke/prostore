@@ -4,7 +4,7 @@ import { prisma } from "@/db/prisma"
 import Credentials from "next-auth/providers/credentials"
 import { compareSync } from "bcrypt-ts-edge"
 import type { NextAuthConfig } from "next-auth"
-import { cookies } from "next/headers"
+// import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 
 export const config = {
